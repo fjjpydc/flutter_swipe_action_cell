@@ -14,7 +14,7 @@ A package that can give you a cell that can be swiped, effect is like iOS native
 
 Alipay | Wechat | 
 -------- | -----
-<img src="https://raw.githubusercontent.com/luckysmg/daily_images/main/flutter_swipe_action_cell_images/alipay.JPG?raw=true" width="250"  alt=""/> | <img src="https://github.com/luckysmg/daily_images/blob/main/flutter_swipe_action_cell_images/wechat.JPG?raw=true" width="250"  alt=""/>
+# 添加了  final void Function(int index, bool isActionShowing)? onActionShowingChanged; 回调使外面list知道是哪个item在滑动， 注意在删除的时候把选中的index复位
 
 
 ## Get started

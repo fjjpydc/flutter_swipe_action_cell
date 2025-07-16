@@ -116,6 +116,9 @@ class SwipeActionCell extends StatefulWidget {
   ///
   /// 关闭动画的曲线
   final Curve closeAnimationCurve;
+  
+  // 1. 在 SwipeActionCell 组件中添加回调属性，传递 index 和是否显示动作按钮状态
+  final void Function(int index, bool isActionShowing)? onActionShowingChanged;
 
   /// ## About [key] / 关于[key]
   /// You should put a key,like [ValueKey] or [ObjectKey]
@@ -154,6 +157,7 @@ class SwipeActionCell extends StatefulWidget {
     this.openAnimationCurve = Curves.easeOutQuart,
     this.closeAnimationCurve = Curves.easeOutQuart,
     this.selectedForegroundColor,
+    this.onActionShowingChanged,
   }) : super(key: key);
 
   @override
@@ -507,6 +511,8 @@ class SwipeActionCellState extends State<SwipeActionCell>
     } else {
       _updateWithNormalEffect(details);
     }
+    _notifyActionShowingChanged();
+    setState(() {});
   }
 
   void _updateWithFullDraggableEffect(DragUpdateDetails details) {
@@ -695,6 +701,7 @@ class SwipeActionCellState extends State<SwipeActionCell>
         ..addListener(() {
           if (lockAnim) return;
           this.currentOffset = Offset(animation.value, 0);
+          _notifyActionShowingChanged(); // 添加回调通知
           setState(() {});
         });
       controller.duration =
@@ -703,6 +710,7 @@ class SwipeActionCellState extends State<SwipeActionCell>
     } else {
       this.currentOffset =
           Offset(trailing ? -maxTrailingPullWidth : maxLeadingPullWidth, 0);
+      _notifyActionShowingChanged(); // 添加回调通知    
       setState(() {});
     }
   }
@@ -718,6 +726,7 @@ class SwipeActionCellState extends State<SwipeActionCell>
         ..addListener(() {
           if (lockAnim) return;
           this.currentOffset = Offset(animation.value, 0);
+          _notifyActionShowingChanged(); // 添加回调通知
           setState(() {});
         });
 
@@ -821,7 +830,13 @@ class SwipeActionCellState extends State<SwipeActionCell>
         }),
     };
   }
-
+  // 3. 定义一个方法通知外部当前item的滑动状态
+  void _notifyActionShowingChanged() {
+    final bool isShowing = currentOffset.dx != 0.0;
+    if (widget.onActionShowingChanged != null && widget.index != null) {
+      widget.onActionShowingChanged!(widget.index!, isShowing);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     editing = widget.controller?.isEditing.value ?? false;
